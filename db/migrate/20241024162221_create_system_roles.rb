@@ -5,5 +5,6 @@ class CreateSystemRoles < ActiveRecord::Migration[7.0]
       t.text :description
       t.timestamps
     end
+    add_foreign_key :users, :system_roles
   end
 end

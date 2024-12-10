@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_10_114808) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_04_172845) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -50,26 +50,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_10_114808) do
   end
 
   create_table "languages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "locale"
-    t.bigint "user_id"
+    t.string "locale", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_languages_on_user_id"
   end
 
   create_table "system_roles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "role_name"
+    t.string "role_name", null: false
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "ticket_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "type_name"
+    t.string "type_name", null: false
     t.text "description"
+    t.bigint "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "event_id", null: false
     t.index ["event_id"], name: "index_ticket_types_on_event_id"
   end
 
@@ -85,23 +83,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_10_114808) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.string "email", null: false
-    t.string "password"
-    t.string "system_role_id"
-    t.string "qr_code"
+    t.string "name", null: false
+    t.bigint "system_role_id", null: false
+    t.bigint "language_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "language_id"
-    t.string "encrypted_password"
-    t.index ["language_id"], name: "fk_rails_45f4f12508"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["system_role_id"], name: "fk_rails_eede1b07cc"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "languages", "users"
   add_foreign_key "ticket_types", "events"
   add_foreign_key "tickets", "events"
   add_foreign_key "tickets", "users"
-  add_foreign_key "users", "languages"
+  add_foreign_key "users", "system_roles"
 end
