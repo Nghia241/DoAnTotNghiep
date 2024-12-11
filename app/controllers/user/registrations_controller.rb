@@ -1,10 +1,9 @@
 class User::RegistrationsController < Devise::RegistrationsController
   # Ghi đè các phương thức của Devise nếu cần
   protected
-
-
+  
   def sign_up_params
-    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+    params.require(:user).permit(:name, :email, :password, :password_confirmation, :system_role_id)
   end
 
   # Ghi đè phương thức after_sign_up_path_for để chuyển hướng đến trang đăng nhập
